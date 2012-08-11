@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Embedded_C_Parser
 {
@@ -8,17 +9,28 @@ namespace Embedded_C_Parser
     {
         private List<string> code;
         private SortedSet<string> externalLibraries; //like stdio.h
+        private List<string> possibleIncludeFilesPaths; //like headers from project
         private List<KeyValuePair<string, string>> objectLikeMacros;
 
-        public PreProcessorParser(List<string> inputCode)
+        public PreProcessorParser(List<string> inputCode, List<string> includeFilesPaths = null)
         {
             code = inputCode;
+
+            if (includeFilesPaths == null)
+            {
+                includeFilesPaths = new List<string>();
+            }
+            else
+            {
+                possibleIncludeFilesPaths = includeFilesPaths;
+            }
+
             externalLibraries = new SortedSet<string>();
             objectLikeMacros = new List<KeyValuePair<string, string>>();
         }
 
         //returns code with parsed pre-processor directives
-        virtual public List<string> Parse()
+        public List<string> Parse()
         {
             RemoveComments();
             GetMacros(); //and apply header guarian (#ifndef #define #endif) //#include too
@@ -176,8 +188,90 @@ namespace Embedded_C_Parser
                 LibrariesIncludeGetter(i);
 
                //#include " xxx "
+                HeadersIncluder(i);
             }
             //TODO: make Function-like Macros
+        }
+
+        //not tested
+        private void HeadersIncluder(int lineNo)
+        {
+            if (code[lineNo].ToLower().Trim().StartsWith("#include\""))
+            {
+                int startQuoteIndex = code[lineNo].IndexOf('"');
+                int endQuoteIndex = code[lineNo].LastIndexOf('"');
+                if (endQuoteIndex == -1)
+                    throw new ApplicationException(String.Format(
+                        "#include\" xxx \" without ending quote '\"' in line: {0}", lineNo
+                    ));
+
+                string include = code[lineNo].Substring(startQuoteIndex, endQuoteIndex - startQuoteIndex);
+                string includePath;
+
+                if ((includePath = possibleIncludeFilesPaths.Find(x => GetFileNameFromPath(x).Equals(include))) == String.Empty)
+                    throw new ApplicationException(String.Format(
+                        "There is an header: {0} in line: {1} which does not exist in possible includes list",
+                        include,
+                        lineNo
+                    ));
+
+                IncludeHeaderToCode(includePath, lineNo);
+
+                code[lineNo] = String.Empty;
+            }
+        }
+
+        private void IncludeHeaderToCode(string headerPath, int lineNo)
+        {
+            List<string> headerCode = GetCodeFromFile(headerPath);
+
+            AddHeaderToCode(lineNo, headerCode);
+        }
+
+        private void AddHeaderToCode(int lineNo, List<string> headerCode)
+        {
+            List<string> tempCode = code.GetRange(lineNo, code.Count - lineNo);
+            code.RemoveRange(lineNo, code.Count - lineNo);
+            code.AddRange(headerCode);
+            code.AddRange(tempCode);
+        }
+
+        private static List<string> GetCodeFromFile(string headerPath)
+        {
+            if (!File.Exists(headerPath))
+                throw new ApplicationException(String.Format(
+                    "file: '{0}' you want to include does not exist"
+                ));
+
+            List<string> codeFromFile = new List<string>();
+            using (StreamReader sr = new StreamReader(headerPath))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    codeFromFile.Add(line);
+                }
+                sr.Close();
+            }
+            return codeFromFile;
+        }
+
+        private string GetFileNameFromPath(string path)
+        {
+            int lastSlashIndex = path.LastIndexOf('/');
+            if(lastSlashIndex == -1)
+            {
+                lastSlashIndex = path.LastIndexOf('\\');
+            }
+
+            if(lastSlashIndex == -1)
+                throw new ArgumentException(String.Format(
+                    "Path: {0} is incorrect", path
+                    ),
+                path
+                );
+
+            return path.Substring(lastSlashIndex + 1);
         }
 
         private void LibrariesIncludeGetter(int lineNo)
@@ -316,5 +410,6 @@ namespace Embedded_C_Parser
                 }
             }
         }
+
     }
 }

@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArythmeticStatement.cs" />
+    <Compile Include="Function.cs" />
+    <Compile Include="IInstruction.cs" />
+    <Compile Include="MainClass.cs" />
     <Compile Include="PreProcessorParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

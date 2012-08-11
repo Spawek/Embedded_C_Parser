@@ -207,7 +207,7 @@ namespace PreProcessorsTests
 
         [TestMethod()]
         [DeploymentItem("Embedded_C_Parser.exe")]
-        public void definitionsGatheringTest()
+        public void DefinitionsGatheringTest()
         {
             List<string> inputCode = new List<string>()
             {
@@ -227,35 +227,72 @@ namespace PreProcessorsTests
 
         [TestMethod()]
         [DeploymentItem("Embedded_C_Parser.exe")]
-        public void StubsTest()
+        public void GetFileNameFromPathTest()
         {
+
+            PreProcessorParser target = new PreProcessorParser(new List<string>());
+            PrivateObject po = new PrivateObject(target);
+
+            //test1
+            string actual = (string)po.Invoke(
+                "GetFileNameFromPath",
+                new Type[]{typeof(string)},
+                new Object[]{@"D:\cad\dupa.dupa"}
+            );
+            Assert.AreEqual("dupa.dupa", actual);
+
+            //test2
+            actual = (string)po.Invoke(
+                "GetFileNameFromPath",
+                new Type[] { typeof(string) },
+                new Object[] { @"D:/cad/pupa.pupa" }
+            );
+            Assert.AreEqual("pupa.pupa", actual);
+        }
+
+        [TestMethod()]
+        [DeploymentItem("Embedded_C_Parser.exe")]
+        public void AddHeaderToCodeTest()
+        {
+            List<string> inputCode = new List<string>()
+            {
+                "1",
+                "2",
+                "5",
+                "6"
+            };
+            PreProcessorParser target = new PreProcessorParser(inputCode);
+            PrivateObject po = new PrivateObject(target);
+
+            List<string> includeCode = new List<string>()
+            {
+                "3",
+                "4"
+            };
+            po.Invoke("AddHeaderToCode",
+                new Type[]{typeof(int), typeof(List<string>)},
+                new Object[]{2, includeCode}
+            );
+            List<string> actual = (List<string>)po.GetField("code");
+
             List<string> expected = new List<string>()
             {
-                "12345",
                 "1",
-                "45"
+                "2",
+                "3", 
+                "4",
+                "5",
+                "6"
             };
-
-            var mStubParser = MockRepository.GenerateStub<PreProcessorParser>(new Object[] { new List<string>() { "asd" } });
-            mStubParser.Stub(x => x.Parse()).Return(new List<string>(){
-                "12345",
-                "1",
-                "45"
-            });
-
-            List<string> actual = mStubParser.Parse();
 
             Assert.AreEqual(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
             {
                 Assert.AreEqual(expected[i], actual[i]);
             }
-
-            var mMockParer = MockRepository.GenerateMock<PreProcessorParser>(new Object[] { new List<string>() { "asd" } });
-            mMockParer.Parse();
-            mMockParer.AssertWasCalled(x => x.Parse());
-            mStubParser.AssertWasCalled(x => x.Parse());
         }
+
+
         #region Additional test attributes
 
         //
