@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Embedded_C_Parser;
 
 namespace Embedded_C_Parser
 {
-    public interface IInstruction
+    public abstract class IInstruction
     {
         private IInstruction nextInstruction;
 
         public abstract variable Execute();
-
-        IInstruction(string instructionCode)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     /* { 
@@ -28,6 +24,12 @@ namespace Embedded_C_Parser
         public IDictionary<string, variable> inheritedVariables;
         public IDictionary<string, variable> localVariables = new Dictionary<string, variable>(); //its always empty at start
         private IInstruction firstInnerInstruction;
+        public IDictionary<string, Function> knownFunctions;
+
+        public override variable Execute()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class ConditionalInstruction : IInstruction
@@ -36,10 +38,19 @@ namespace Embedded_C_Parser
 
         private IInstruction nextInstructionIfCondFailed;
         private IInstruction nextInstructiobIfCondFulfilled;
+
+        public override variable Execute()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     public class VariableDeclarationInstruction : IInstruction
     {
-
+        public override variable Execute()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

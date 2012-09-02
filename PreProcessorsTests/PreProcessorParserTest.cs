@@ -4,7 +4,7 @@ using Embedded_C_Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 
-namespace PreProcessorsTests
+namespace Embedded_C_ParserTests
 {
     /// <summary>
     ///This is a test class for PreProcessorParserTest and is intended

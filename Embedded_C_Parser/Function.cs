@@ -3,20 +3,27 @@ using System.Collections.Generic;
 
 namespace Embedded_C_Parser
 {
-    public class variable
+    public class variable : Token
     {
-        public Type varType;
-        public string varTypeName; //if type not known in C#
-        public Object varValue;
+        public Type type;
+        public dynamic value; //was Object
+
+        public variable(Object _value, Type _type)
+        {
+            value = _value;
+            type = _type;
+        }
     }
 
-    public class Function
+    public class Function : Token
     {
         //function arguments
-        private List<variable> agruments;
+        public List<variable> agruments;
+        public List<Type> neededArgumentsType;
+        public int agrumgensNo;
 
-        //function return
-        private variable returnVariable;
+        //function return type
+        private Type returnType;
 
         //instructions
         private InstructionsBlock instructuionBlock;
@@ -27,6 +34,11 @@ namespace Embedded_C_Parser
         private Function() { }
 
         public Function(List<string> inputCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public variable Execute(variable[] arguments)
         {
             throw new NotImplementedException();
         }
