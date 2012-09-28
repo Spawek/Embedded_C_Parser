@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Embedded_C_Parser.Instructions;
 
 namespace Embedded_C_Parser
 {
@@ -9,6 +10,8 @@ namespace Embedded_C_Parser
     {
         private string code;
         private InstructionsBlock parent;
+
+        public IInstruction NextInstruction { get; private set; }
 
         private static string[] operatorsList = new string[]
         {
@@ -33,11 +36,9 @@ namespace Embedded_C_Parser
             code = instructionCode;
         }
 
-
-
         // white-space characters MUST be removed,
         // ";" from end MUST be removed
-        override public variable Execute()
+        public variable Execute()
         {
             List<Token> tokens = Tokenizer.Tokenize(code);
             List<Token> tokensInRPN = Tokenizer.RPN(tokens);

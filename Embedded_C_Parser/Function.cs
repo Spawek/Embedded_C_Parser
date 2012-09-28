@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using Embedded_C_Parser.Instructions;
 
 namespace Embedded_C_Parser
 {
     public class variable : Token
     {
-        public Type type;
-        public dynamic value; //was Object
+        public dynamic value;
 
-        public variable(Object _value, Type _type)
+        public variable(Object _value)
         {
             value = _value;
-            type = _type;
+        }
+
+        public Type type
+        {
+            get
+            {
+                return value.GetType();
+            }
         }
     }
 

@@ -41,12 +41,19 @@ namespace Embedded_C_Parser
 
     public class ConstantToken : Token
     {
-        public Object val;
-        public Type type;
+        public dynamic val;
+        public Type type
+        {
+            get
+            {
+                return val.GetType();
+            }
+        }
+
 
         public ConstantToken(string ConstantTokenCode)
         {
-            if(ConstantTokenCode[0] == '\'')
+            if(ConstantTokenCode[0] == '\'') //char token
             {
                     if (ConstantTokenCode.Length != 3)
                         throw new ApplicationException("wrong characte constant size");
@@ -54,27 +61,23 @@ namespace Embedded_C_Parser
                     if (ConstantTokenCode[2] != '\'')
                         throw new ApplicationException("there is no ending \' in character constant");
 
-                    type = typeof(char);
                     val = ConstantTokenCode[1];
             }
-            else if(ConstantTokenCode[0] == '\"')
+            else if(ConstantTokenCode[0] == '\"') //string token
             {
                 if (ConstantTokenCode[ConstantTokenCode.Length-1] != '\"')
                         throw new ApplicationException("there is no ending \" in character constant");
 
-                    type = typeof(string);
-                    val = ConstantTokenCode[2];
+                    val =  ConstantTokenCode.Substring(1, ConstantTokenCode.Length - 2);
             }
             else if (char.IsDigit(ConstantTokenCode[0]))
             {
                 if (ConstantTokenCode.Contains('.')) //double
                 {
-                    type = typeof(double);
                     val = Convert.ToDouble(ConstantTokenCode, CultureInfo.InvariantCulture.NumberFormat);
                 }
                 else //int
                 {
-                    type = typeof(int);
                     val = Convert.ToInt32(ConstantTokenCode);
                 }
             }
@@ -83,7 +86,6 @@ namespace Embedded_C_Parser
                 try
                 {
                     val = Convert.ToInt32(ConstantTokenCode);
-                    type = typeof(int);
                 }
                 catch (Exception)
                 {
@@ -95,7 +97,6 @@ namespace Embedded_C_Parser
         public ConstantToken(Object _val, Type _type)
         {
             val = _val;
-            type = _type;
         }
     }
 
@@ -352,7 +353,7 @@ namespace Embedded_C_Parser
                 }
                 else if (token.GetType() == typeof(ConstantToken))
                 {
-                    listWithResolvedTokens.Add(new variable(((ConstantToken)token).val, ((ConstantToken)token).type));
+                    listWithResolvedTokens.Add(new variable(((ConstantToken)token).val));
                 }
                 else if (token.GetType() == typeof(FunctionToken))
                 {

@@ -41,14 +41,10 @@ namespace Embedded_C_Parser
             switch (code)
             {
                 case "+":
-                    
-                    return new variable(
-                        arguments[0].value + arguments[1].value, 
-                        arguments[0].type
-                    );
+                    return new variable(arguments[1].value + arguments[0].value);
 
                 case "*":
-                    return new variable((int)arguments[0].value * (int)arguments[1].value, typeof(int));
+                    return new variable(arguments[1].value * arguments[0].value);
 
                 default:
                     throw new ApplicationException("unresolved operator");
@@ -67,7 +63,15 @@ namespace Embedded_C_Parser
     {
         override public variable Execute(variable[] arguments)
         {
-            throw new NotImplementedException();
+            switch (code)
+            {
+                case "=":
+                    arguments[1].value = arguments[0].value;
+                    return arguments[1];
+
+                default:
+                    throw new ApplicationException("unresolved operator");
+            }
         }
 
         public RightSideOper(string _code, int _priority, int _noOfArguments)
