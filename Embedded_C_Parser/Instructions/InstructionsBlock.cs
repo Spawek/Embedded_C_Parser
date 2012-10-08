@@ -18,7 +18,14 @@ namespace Embedded_C_Parser.Instructions
         public IDictionary<string, variable> inheritedVariables;
         public IDictionary<string, variable> localVariables = new Dictionary<string, variable>(); //its always empty at start
         private List<IInstruction> instructionsList;
+
+        /// <summary>
+        /// known list of functions
+        /// functions cannot be undeclared so functions shouldn't be removed from this list //TODO: make doing it impossible
+        /// known functions object is always passed to next block
+        /// </summary>
         public IDictionary<string, Function> knownFunctions;
+        public ISet<string> knownTypes;
         private List<string> list;
 
         public InstructionsBlock(List<string> list)
