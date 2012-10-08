@@ -5,8 +5,8 @@ namespace Embedded_C_Parser
 {
     public class Program
     {
-        private ISet<string> knownDataTypes;
-        private ISet<string> knownFunctions;
+        private IDictionary<string, variable> knownDataTypes;
+        private SortedSet<string> knownFunctions;
 
         private Program() { }
 

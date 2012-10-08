@@ -28,9 +28,18 @@ namespace Embedded_C_Parser.Instructions
         public ISet<string> knownTypes;
         private List<string> list;
 
-        public InstructionsBlock(List<string> list)
+        /// <summary>
+        /// use for main() scope only
+        /// </summary>
+        /// <param name="list"></param>
+        public InstructionsBlock(List<string> code)
         {
+            throw new NotImplementedException();
+        }
 
+        public InstructionsBlock(List<string> code, InstructionsBlock parent)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

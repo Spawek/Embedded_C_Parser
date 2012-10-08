@@ -50,22 +50,6 @@ namespace Embedded_C_ParserTests
             Assert.AreEqual(6.0, (double)(result.value));
         }
 
-        [TestMethod]
-        [DeploymentItem("Embedded_C_Parser.exe")]
-        public void VariableDefiningTest()
-        {
-            string variableDefinition = "double x = 4";
-
-            InstructionsBlock block = new InstructionsBlock();
-
-            var declaration = new VariableDeclarationInstruction(variableDefinition, block);
-
-            declaration.Execute();
-
-            Assert.AreEqual(typeof(double), block.localVariables["x"].type);
-            Assert.AreEqual(4.0, block.localVariables["x"].value);
-        }
-
         //little bit too early for that kind of test //it'd be too big step
         //[TestMethod]
         //[DeploymentItem("Embedded_C_Parser.exe")]

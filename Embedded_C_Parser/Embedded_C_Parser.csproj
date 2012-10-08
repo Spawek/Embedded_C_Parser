@@ -46,6 +46,7 @@
     <Compile Include="Instructions\ArythmeticStatement.cs" />
     <Compile Include="Function.cs" />
     <Compile Include="Instructions\ConditionalInstruction.cs" />
+    <Compile Include="Instructions\FunctionDeclarationInstruction.cs" />
     <Compile Include="Instructions\IInstruction.cs" />
     <Compile Include="Instructions\InstructionsBlock.cs" />
     <Compile Include="Instructions\VariableDeclarationInstruction.cs" />
